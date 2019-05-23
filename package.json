@@ -1,0 +1,23 @@
+{
+  "name": "autofacebookreact",
+  "version": "1.0.0",
+  "description": "This will auto react with angry react to any facebook message that contains \"lol\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlueAlder/AutoFacebookReact.git"
+  },
+  "author": "Sam Calamos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BlueAlder/AutoFacebookReact/issues"
+  },
+  "homepage": "https://github.com/BlueAlder/AutoFacebookReact#readme",
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "facebook-chat-api": "^1.6.1"
+  }
+}
