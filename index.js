@@ -48,11 +48,11 @@ function logInWithAppState(appState) {
 function startListeningForMessages(api) {
     api.listen((err, message) => {
 
-        if (message.body.toLowerCase().split(" ").includes("lol")) {
+        const words = message.body.toLowerCase().split(" ");
+        if ( (words.includes("lol") || words.includes("lmao")) && message.senderID === process.env.SPECIFIC_USER_ID) {
             console.log(message);
             console.log("sending reaction...")
             api.setMessageReaction("😠", message.messageID);
         }
-
     })
 }
