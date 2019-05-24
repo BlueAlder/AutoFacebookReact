@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/BlueAlder/AutoFacebookReact#readme",
   "dependencies": {
+    "@google-cloud/vision": "^1.0.0",
     "dotenv": "^8.0.0",
     "facebook-chat-api": "^1.6.1"
   }

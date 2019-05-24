@@ -1,6 +1,10 @@
 const login = require("facebook-chat-api");
+const vision = require("@google-cloud/vision");
 const fs = require("fs");
 require('dotenv').config();
+
+// Creates a client
+const client = new vision.ImageAnnotatorClient();
 
 // Try log in with current app state otherwise use credentials
 let appState = {};
@@ -48,12 +52,14 @@ function logInWithAppState(appState) {
 
 function startListeningForMessages(api) {
     api.listen((err, message) => {
-
+        console.log(message);
         const words = message.body.toLowerCase().split(" ");
         if ( (words.includes("lol") || words.includes("lmao")) && message.senderID === process.env.SPECIFIC_USER_ID) {
             console.log(message);
             console.log("sending reaction...")
             api.setMessageReaction("😠", message.messageID);
         }
+
+        // Check for photo being sent
     })
 }
