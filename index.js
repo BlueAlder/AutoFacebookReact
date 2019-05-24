@@ -3,8 +3,9 @@ const fs = require("fs");
 require('dotenv').config();
 
 // Try log in with current app state otherwise use credentials
+let appState = {};
 try {
-    const appState = JSON.parse(fs.readFileSync('appstate.json', 'utf8'))
+    appState = JSON.parse(fs.readFileSync('appstate.json', 'utf8'))
 } catch (e) {
     console.error(e);
 }
