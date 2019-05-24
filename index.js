@@ -9,6 +9,8 @@ const senderID = {
     "sam": "1562842627"
 }
 
+const whitelisted_senders = [senderID["erol"], senderID["grace"]]
+
 const probability = {
     "UNKNOWN": 0,
     "VERY_UNLIKELY": 1,
@@ -81,7 +83,7 @@ function startListeningForMessages(api) {
         }
 
         // Check for photo being sent this only happens 5% of the time
-        if (Math.random * 100 > 5 && message.attachments.length != 0 && (message.senderID === senderID["erol"] || message.senderID === senderID["grace"]) ) {
+        if (Math.random * 100 < 5 && message.attachments.length != 0 && (whitelisted_senders.includes(message.senderID)) ) {
             api.sendMessage("DING DING DING ANALYSIS BEGGINING, this only happens 5% of the time so count yourself lucky!")
             message.attachments.forEach(async (attachment) => {
                 if (attachment.type === "photo") {
