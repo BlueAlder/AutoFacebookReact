@@ -88,9 +88,9 @@ function startListeningForMessages(api) {
         }
 
         // Check for photo being sent this only happens 5% of the time
-        if (   (Math.random() * 100 < 5)       && 
-              message.attachments.length != 0 && 
-              (whitelisted_senders.includes(message.senderID) || whitelisted_threads.includes(message.threadID)) 
+        if ( message.attachments.length != 0 &&    
+              ( (Math.random() * 100 < 5) && (whitelisted_senders.includes(message.senderID) || whitelisted_threads.includes(message.threadID)) ) ||
+              message.body === "!analyse me" 
             ) {
             api.sendMessage("DING DING DING ANALYSIS BEGGINING, this only happens 5% of the time so count yourself lucky!")
             message.attachments.forEach(async (attachment) => {
