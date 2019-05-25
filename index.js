@@ -133,10 +133,9 @@ function startListeningForMessages(api) {
                         if (probability[face.surpriseLikelihood] >= probability["POSSIBLE"]) {
                             message_to_send += "SURPRISED, "
                         }
-                        
-                        message_to_send += " and of course just living life ya know?"
-                        api.sendMessage(message_to_send, message.threadID);
                     });
+                    message_to_send += " and of course just living life ya know?"
+                    api.sendMessage(message_to_send, message.threadID);
 
                     api.sendMessage("hey do you know what i really like about that photo you sent :)", message.threadID);
                 
