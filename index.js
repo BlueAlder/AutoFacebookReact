@@ -88,7 +88,7 @@ function startListeningForMessages(api) {
         }
 
         // Check for photo being sent this only happens 5% of the time
-        if (  // (Math.random() * 100 < 5)       && 
+        if (   (Math.random() * 100 < 5)       && 
               message.attachments.length != 0 && 
               (whitelisted_senders.includes(message.senderID) || whitelisted_threads.includes(message.threadID)) 
             ) {
