@@ -37,9 +37,9 @@ try {
 }
 
 // If appState exists login with it
-console.log(appState)
+// console.log(appState)
 
-if(!appState.key) {
+if(appState.length) {
     logInWithAppState(appState);
 } else {
     logInWithCredentials();
@@ -77,18 +77,18 @@ function logInWithAppState(appState) {
 function startListeningForMessages(api) {
     api.setOptions({
         logLevel: "warn",
-        selfListen: true
+        // selfListen: true
     })
 
     api.listen((err, message) => {
         console.log(message);
         const words = message.body.toLowerCase().split(" ");
-        words.forEach(word => console.log(word.match('/\blol[!?*lo]*\b')));
-        
+        // console.log(words.some(word => word.match(/\blo[!?*lo]*\b/gm)));
 
-        if ( (words.some(word => word.match('/\blol[!?*lo]*\b') !== null) || words.includes("lmao") || words.includes("idm")) && message.senderID === process.env.SPECIFIC_USER_ID) {
+
+        if ( ( words.some(word => word.match(/\blo[!?*lo]*\b/gm)) || words.includes("lmao") || words.includes("idm")) && ((message.senderID === process.env.SPECIFIC_USER_ID) || message.threadID === "1827756387320183")) {
             console.log(message);
-            console.log("sending reaction...")
+            console.log("Sending reaction...")
             api.setMessageReaction("😠", message.messageID);
         }
 
