@@ -37,7 +37,9 @@ try {
 }
 
 // If appState exists login with it
-if(appState) {
+console.log(appState)
+
+if(!appState.key) {
     logInWithAppState(appState);
 } else {
     logInWithCredentials();
@@ -81,7 +83,10 @@ function startListeningForMessages(api) {
     api.listen((err, message) => {
         console.log(message);
         const words = message.body.toLowerCase().split(" ");
-        if ( (words.includes("lol") || words.includes("lmao") || words.includes("idm")) && message.senderID === process.env.SPECIFIC_USER_ID) {
+        words.forEach(word => console.log(word.match('/\blol[!?*lo]*\b')));
+        
+
+        if ( (words.some(word => word.match('/\blol[!?*lo]*\b') !== null) || words.includes("lmao") || words.includes("idm")) && message.senderID === process.env.SPECIFIC_USER_ID) {
             console.log(message);
             console.log("sending reaction...")
             api.setMessageReaction("😠", message.messageID);
