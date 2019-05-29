@@ -75,13 +75,13 @@ function logInWithAppState(appState) {
 function startListeningForMessages(api) {
     api.setOptions({
         logLevel: "warn",
-        // selfListen: true
+        selfListen: true
     })
 
     api.listen((err, message) => {
         console.log(message);
         const words = message.body.toLowerCase().split(" ");
-        if ( (words.includes("lol") || words.includes("lmao")) && message.senderID === process.env.SPECIFIC_USER_ID) {
+        if ( (words.includes("lol") || words.includes("lmao") || words.includes("idm")) && message.senderID === process.env.SPECIFIC_USER_ID) {
             console.log(message);
             console.log("sending reaction...")
             api.setMessageReaction("😠", message.messageID);
