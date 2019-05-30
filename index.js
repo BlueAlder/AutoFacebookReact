@@ -25,6 +25,7 @@ const threadID = {
 
 const whitelisted_senders = [senderID["erol"], senderID["grace"]];
 const whitelisted_threads = [threadID["bangme"]];
+const whitelisted_sentiment_senders = [senderID["erol"], senderID["grace"]]
 
 const probability = {
     "UNKNOWN": 0,
@@ -96,7 +97,9 @@ function startListeningForMessages(api) {
         // console.log(words.some(word => word.match(/\blo[!?*lo]*\b/gm)));
         
         // Save message to db with sentiment
-        saveSentiment(message)
+        if (whitelisted_sentiment_senders.includes(message.senderID)) {
+            saveSentiment(message)
+        }
 
         if ( ( words.some(word => word.match(/\blo[!$*lo]*\b/gm)) || words.includes("lmao") || words.includes("idm")) && ((message.senderID === process.env.SPECIFIC_USER_ID) || message.threadID === "1827756387320183")) {
             console.log(message);
