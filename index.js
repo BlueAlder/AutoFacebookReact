@@ -16,16 +16,21 @@ const pool = new Pool();
 const senderID = {
     "erol": "100007595856517",
     "grace": "100005042073791",
-    "sam": "1562842627"
+    "sam": "1562842627",
+    "matt": "1448665557"
 }
 
 const threadID = {
-    "bangme": "1690680461173553"
+    "bangme": "1690680461173553",
+    "ass": "1695448863886313",
+    "gfBang": "1527466654027926"
+
 }
 
 const whitelisted_senders = [senderID["erol"], senderID["grace"]];
 const whitelisted_threads = [threadID["bangme"]];
 const whitelisted_sentiment_senders = [senderID["erol"], senderID["grace"]]
+const whitelisted_sentiment_threads = [threadID["bangme"], threadID["ass"], threadID["gfBang"]]
 
 const probability = {
     "UNKNOWN": 0,
