@@ -2,6 +2,16 @@ const login = require("facebook-chat-api");
 const vision = require("@google-cloud/vision");
 const fs = require("fs");
 require('dotenv').config();
+// Imports the Google Cloud client library
+const language = require('@google-cloud/language');
+
+// Instantiates a client
+const languageClient = new language.LanguageServiceClient();
+
+const { Pool, Client } = require("pg");
+const pool = new Pool();
+
+
 
 const senderID = {
     "erol": "100007595856517",
@@ -77,16 +87,18 @@ function logInWithAppState(appState) {
 function startListeningForMessages(api) {
     api.setOptions({
         logLevel: "warn",
-        // selfListen: true
+        selfListen: true
     })
 
-    api.listen((err, message) => {
+    api.listen( async (err, message) => {
         console.log(message);
         const words = message.body.toLowerCase().split(" ");
         // console.log(words.some(word => word.match(/\blo[!?*lo]*\b/gm)));
+        
+        // Save message to db with sentiment
+        saveSentiment(message)
 
-
-        if ( ( words.some(word => word.match(/\blo[!?*lo]*\b/gm)) || words.includes("lmao") || words.includes("idm")) && ((message.senderID === process.env.SPECIFIC_USER_ID) || message.threadID === "1827756387320183")) {
+        if ( ( words.some(word => word.match(/\blo[!$*lo]*\b/gm)) || words.includes("lmao") || words.includes("idm")) && ((message.senderID === process.env.SPECIFIC_USER_ID) || message.threadID === "1827756387320183")) {
             console.log(message);
             console.log("Sending reaction...")
             api.setMessageReaction("😠", message.messageID);
@@ -152,4 +164,27 @@ function startListeningForMessages(api) {
             });
         }
     })
+}
+
+
+async function saveSentiment(message) {
+    const document = {
+        content: message.body,
+        type: 'PLAIN_TEXT',
+      };
+      
+      // Detects the sentiment of the text
+      languageClient
+        .analyzeSentiment({document: document})
+        .then(async (results) => {
+          const sentiment = results[0].documentSentiment;
+            
+          const query = "INSERT INTO public.messages (mid, sender_id, thread_id, body, time_sent, is_group, sentiment_score, sentiment_magnitude) values ($1, $2, $3, $4, $5, $6, $7, $8)";
+          const values = [message.messageID, message.senderID, message.threadID, message.body, parseInt(message.timestamp), message.isGroup, sentiment.score, sentiment.magnitude];
+          const res = await pool.query(query, values);
+        //   await pool.end();
+        })
+        .catch(err => {
+          console.error('ERROR:', err);
+        });
 }
