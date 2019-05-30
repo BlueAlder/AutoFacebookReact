@@ -88,7 +88,7 @@ function logInWithAppState(appState) {
 function startListeningForMessages(api) {
     api.setOptions({
         logLevel: "warn",
-        selfListen: true
+        // selfListen: true
     })
 
     api.listen( async (err, message) => {
