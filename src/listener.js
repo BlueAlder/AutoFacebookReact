@@ -23,8 +23,14 @@ exports.startListeningForMessages = (api) => {
         }
 
         // Check for photo being sent this only happens 5% of the time
-        if ( message.attachments.length !== 0 && Math.random() * 100 < 5 && Whitelist.isWhitelisted(message.senderID, message.threadID) ) {
-            PhotoAnalysis.facialDescription(api, message)
+
+        if ( message.attachments.length !== 0 &&  Whitelist.isPhotoWhitelisted(message.senderID, message.threadID) ) {
+            console.log("Message was sent RNG'ing...");
+            const RNG = Math.random() * 100;
+            console.log(`RNG was ${RNG}`);
+            if ( RNG < 5 ) {
+                PhotoAnalysis.facialDescription(api, message)
+            }
         }
     })
 };

@@ -63,3 +63,6 @@ typings/
 #
 appstate.json
 ctf-gcp.json
+
+# jetbrains ide
+.idea/
