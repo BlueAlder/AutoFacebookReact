@@ -4,6 +4,7 @@
   "description": "This will auto react with angry react to any facebook message that contains \"lol\"",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,10 +18,10 @@
   },
   "homepage": "https://github.com/BlueAlder/AutoFacebookReact#readme",
   "dependencies": {
-    "@google-cloud/language": "^3.0.0",
-    "@google-cloud/vision": "^1.0.0",
-    "dotenv": "^8.0.0",
-    "facebook-chat-api": "^1.6.1",
-    "pg": "^7.11.0"
+    "@google-cloud/language": "^4.1.0",
+    "@google-cloud/secret-manager": "^3.1.0",
+    "@google-cloud/vision": "^2.1.1",
+    "dotenv": "^8.2.0",
+    "facebook-chat-api": "^1.8.0"
   }
 }

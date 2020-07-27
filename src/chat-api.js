@@ -2,6 +2,10 @@ const login = require("facebook-chat-api");
 const fs = require("fs");
 const Listener = require("./listener");
 
+const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
+const { exit } = require("process");
+const client = new SecretManagerServiceClient();
+
 
 exports.loginAndListen = () => {
 
@@ -27,9 +31,15 @@ exports.loginAndListen = () => {
 };
 
 
-logInWithCredentials =  () => {
+logInWithCredentials = async  () => {
     console.log("Logging in with credentials from env variables...");
-    login({email: process.env.FB_USER, password: process.env.FB_PASS}, (err, api) => {
+    const FB_USER = await getSecret('facebook-user')
+    const FB_PASS = await getSecret('facebook-pass')
+    console.log(FB_USER)
+    console.log(FB_PASS)
+    // exit(0)
+
+    login({email: FB_USER, password: FB_PASS}, async (err, api) => {
         if(err) {
             throw err;
         }
@@ -37,7 +47,7 @@ logInWithCredentials =  () => {
 
         // save app state
         console.log("Writing app state to file appstate.json");
-        fs.writeFileSync('appstate.json', JSON.stringify(api.getAppState()));
+        await updateSecret('fb-login-token', JSON.stringify(api.getAppState()));
 
         Listener.startListeningForMessages(api);
     })
@@ -56,3 +66,21 @@ logInWithAppState = (appState) => {
         }    
     })
 };
+
+async function getSecret(secretName) {
+    const [secret] = await client.accessSecretVersion(
+        {name: `projects/${process.env.PROJECT_ID}/secrets/${secretName}/versions/latest`}
+    )
+    return secret.payload.data.toString();
+}
+
+async function updateSecret(secretName, secretValue) {
+    const payload = Buffer.from(secretValue, 'utf8');
+    const [version] = await client.addSecretVersion({
+        parent: `projects/${process.env.PROJECT_ID}/secrets/${secretName}`,
+        payload: {
+          data: payload,
+        },
+      });
+    return version;
+}

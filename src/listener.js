@@ -14,9 +14,9 @@ exports.startListeningForMessages = (api) => {
         console.log(message);
         
         // Save message to db with sentiment
-        if (Whitelist.isSentimentWhitelisted(message.senderID, message.threadID) && message.body.length !== 0) {
-            Language.saveSentiment(message);
-        }
+        // if (Whitelist.isSentimentWhitelisted(message.senderID, message.threadID) && message.body.length !== 0) {
+        //     Language.saveSentiment(message);
+        // }
 
         if (Whitelist.isAngryWhitelisted(message.senderID, message.threadID)) {
             React.angryReact(api, message)
@@ -24,13 +24,13 @@ exports.startListeningForMessages = (api) => {
 
         // Check for photo being sent this only happens 5% of the time
 
-        if ( message.attachments.length !== 0 &&  Whitelist.isPhotoWhitelisted(message.senderID, message.threadID) ) {
-            console.log("Message was sent RNG'ing...");
-            const RNG = Math.random() * 100;
-            console.log(`RNG was ${RNG}`);
-            if ( RNG < 5 ) {
-                PhotoAnalysis.facialDescription(api, message)
-            }
-        }
+        // if ( message.attachments.length !== 0 &&  Whitelist.isPhotoWhitelisted(message.senderID, message.threadID) ) {
+        //     console.log("Message was sent RNG'ing...");
+        //     const RNG = Math.random() * 100;
+        //     console.log(`RNG was ${RNG}`);
+        //     if ( RNG < 5 ) {
+        //         PhotoAnalysis.facialDescription(api, message)
+        //     }
+        // }
     })
 };
