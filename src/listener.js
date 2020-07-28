@@ -1,26 +1,39 @@
 const Constants = require("./data/constants");
 const React = require("./messages/react");
 const PhotoAnalysis = require("./messages/photo");
-const Language = require("./messages/language");
+// const Language = require("./messages/language");
 const Whitelist = require("./data/whitelist");
 
 exports.startListeningForMessages = (api) => {
     api.setOptions({
         logLevel: "http",
-        // selfListen: true
+        listenEvents: true,
+        selfListen: true,
     });
 
-    api.listen( async (err, message) => {
-        console.log(message);
+    api.listenMqtt( (err, event) => {
+        if(err) return console.error(err);
+
+        switch(event.type) {
+            case "message":
+                console.log(event)
+                if (Whitelist.isAngryWhitelisted(event.senderID, event.threadID)) {
+                    React.angryReact(api, event)
+                }
+                break;
+            case "event":
+                console.log(event)
+                break;
+        }
+        
+        // console.log(message);
         
         // Save message to db with sentiment
         // if (Whitelist.isSentimentWhitelisted(message.senderID, message.threadID) && message.body.length !== 0) {
         //     Language.saveSentiment(message);
         // }
 
-        if (Whitelist.isAngryWhitelisted(message.senderID, message.threadID)) {
-            React.angryReact(api, message)
-        }
+        
 
         // Check for photo being sent this only happens 5% of the time
 

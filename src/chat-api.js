@@ -1,5 +1,5 @@
 const login = require("facebook-chat-api");
-const fs = require("fs");
+// const fs = require("fs");
 const Listener = require("./listener");
 
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
@@ -7,23 +7,18 @@ const { exit } = require("process");
 const client = new SecretManagerServiceClient();
 
 
-exports.loginAndListen = () => {
+exports.loginAndListen = async() => {
 
     // Try log in with current app state otherwise use credentials
     let appState = {};
     try {
-        appState = JSON.parse(fs.readFileSync('appstate.json', 'utf8'))
+        appState =  JSON.parse( await getSecret('fb-login-token'));
     } catch (e) {
         console.error(e);
     }
 
     if(appState.length) {
-        try {
-            logInWithAppState(appState);
-        } catch (e) {
-            console.log("Appstate log in failed, attempting log in with credentials...");
-            logInWithCredentials();
-        }
+           logInWithAppState(appState) 
         
     } else {
         logInWithCredentials();
@@ -32,7 +27,7 @@ exports.loginAndListen = () => {
 
 
 logInWithCredentials = async  () => {
-    console.log("Logging in with credentials from env variables...");
+    console.log("Logging in with credentials from GCP secrets...");
     const FB_USER = await getSecret('facebook-user')
     const FB_PASS = await getSecret('facebook-pass')
     console.log(FB_USER)
@@ -46,19 +41,22 @@ logInWithCredentials = async  () => {
         console.log("Successfully logged in!");
 
         // save app state
-        console.log("Writing app state to file appstate.json");
+        console.log("Writing app state to secret manager");
         await updateSecret('fb-login-token', JSON.stringify(api.getAppState()));
 
         Listener.startListeningForMessages(api);
     })
 };
 
-logInWithAppState = (appState) => {
+logInWithAppState = async (appState) => {
     console.log("Logging in with pre-existing appstate");
-    login({appState: appState }, (err, api) => {
+    await login({appState: appState }, (err, api) => {
         if(err) {
+            console.log('poop')
             console.error(err);
-            throw err;            
+
+            console.log("Appstate log in failed, attempting log in with credentials...");
+            logInWithCredentials()            
     
         } else {
             console.log("Successfully logged in!");
@@ -71,6 +69,7 @@ async function getSecret(secretName) {
     const [secret] = await client.accessSecretVersion(
         {name: `projects/${process.env.PROJECT_ID}/secrets/${secretName}/versions/latest`}
     )
+    // console.log(secret.payload.data.toString())
     return secret.payload.data.toString();
 }
 
