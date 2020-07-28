@@ -9,7 +9,7 @@ exports.weatherCheck = async (api, event) => {
 
     // 1. check for arguments
     const args = event.body.split("!weather ");
-    console.log(args)
+    // console.log(args)
     if (args.length < 2) {
         console.warn("No argument provided with weather command")
         api.sendMessage("Please provide an argument with the place you want to know the weather", event.threadID)
@@ -26,7 +26,7 @@ exports.weatherCheck = async (api, event) => {
     const res = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${locationQuery}, Australia&key=${geocodeApiKey}`)
     const geocodedData = res.data.results[0];
     console.log(`Got geocoded data of ${locationQuery} at ${geocodedData.geometry.location.lat} and ${geocodedData.geometry.location.lng}`)
-
+    api.sendMessage(`Checking weather for ${geocodedData.formatted_address}`, event.threadID)
 
     // 3. call weather api with lat and long 
     // Get API key
@@ -41,7 +41,7 @@ exports.weatherCheck = async (api, event) => {
         appid: weatherApiKey
     }
     const weatherForecast = await axios.get(`https://api.openweathermap.org/data/2.5/onecall`, {params: weatherQueryParams})
-    console.log(weatherForecast.data)
+    console.log("Got weather forecast data")
 
     for (let day of weatherForecast.data.daily) {
         const dayOfWeek = moment.unix(day.dt).format("dddd");

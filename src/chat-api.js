@@ -28,9 +28,9 @@ logInWithCredentials = async  () => {
     console.log("Logging in with credentials from GCP secrets...");
     const FB_USER = await Utils.getSecret('facebook-user')
     const FB_PASS = await Utils.getSecret('facebook-pass')
-    console.log(FB_USER)
-    console.log(FB_PASS)
-    // exit(0)
+    // console.log(FB_USER)
+    // console.log(FB_PASS)
+    // // exit(0)
 
     login({email: FB_USER, password: FB_PASS}, async (err, api) => {
         if(err) {
