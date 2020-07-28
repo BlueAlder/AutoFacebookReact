@@ -1,5 +1,6 @@
 const Constants = require("./data/constants");
 const React = require("./messages/react");
+const Weather = require("./messages/weather")
 const PhotoAnalysis = require("./messages/photo");
 // const Language = require("./messages/language");
 const Whitelist = require("./data/whitelist");
@@ -16,10 +17,23 @@ exports.startListeningForMessages = (api) => {
 
         switch(event.type) {
             case "message":
-                console.log(event)
+                // console.log(event)
+
+                // Check for angry react
                 if (Whitelist.isAngryWhitelisted(event.senderID, event.threadID)) {
                     React.angryReact(api, event)
                 }
+
+                //Check for weather keyword
+                const keyWord = event.body.toLowerCase().split(" ")[0];
+
+                if (keyWord === "!weather") {
+                    Weather.weatherCheck(api, event);
+                }
+
+
+
+
                 break;
             case "event":
                 console.log(event)
