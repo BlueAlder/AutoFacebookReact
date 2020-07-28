@@ -1,10 +1,8 @@
 const login = require("facebook-chat-api");
 // const fs = require("fs");
 const Listener = require("./listener");
+const Utils = require("./util")
 
-const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
-const { exit } = require("process");
-const client = new SecretManagerServiceClient();
 
 
 exports.loginAndListen = async() => {
@@ -12,7 +10,7 @@ exports.loginAndListen = async() => {
     // Try log in with current app state otherwise use credentials
     let appState = {};
     try {
-        appState =  JSON.parse( await getSecret('fb-login-token'));
+        appState =  JSON.parse( await Utils.getSecret('fb-login-token'));
     } catch (e) {
         console.error(e);
     }
@@ -28,8 +26,8 @@ exports.loginAndListen = async() => {
 
 logInWithCredentials = async  () => {
     console.log("Logging in with credentials from GCP secrets...");
-    const FB_USER = await getSecret('facebook-user')
-    const FB_PASS = await getSecret('facebook-pass')
+    const FB_USER = await Utils.getSecret('facebook-user')
+    const FB_PASS = await Utils.getSecret('facebook-pass')
     console.log(FB_USER)
     console.log(FB_PASS)
     // exit(0)
@@ -42,7 +40,7 @@ logInWithCredentials = async  () => {
 
         // save app state
         console.log("Writing app state to secret manager");
-        await updateSecret('fb-login-token', JSON.stringify(api.getAppState()));
+        await Utils.updateSecret('fb-login-token', JSON.stringify(api.getAppState()));
 
         Listener.startListeningForMessages(api);
     })
@@ -65,21 +63,3 @@ logInWithAppState = async (appState) => {
     })
 };
 
-async function getSecret(secretName) {
-    const [secret] = await client.accessSecretVersion(
-        {name: `projects/${process.env.PROJECT_ID}/secrets/${secretName}/versions/latest`}
-    )
-    // console.log(secret.payload.data.toString())
-    return secret.payload.data.toString();
-}
-
-async function updateSecret(secretName, secretValue) {
-    const payload = Buffer.from(secretValue, 'utf8');
-    const [version] = await client.addSecretVersion({
-        parent: `projects/${process.env.PROJECT_ID}/secrets/${secretName}`,
-        payload: {
-          data: payload,
-        },
-      });
-    return version;
-}
