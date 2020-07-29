@@ -29,6 +29,7 @@ exports.startListeningForMessages = (api) => {
 
                 if (keyWord === "!weather") {
                     Weather.weatherCheck(api, event);
+                   
                 }
 
 
