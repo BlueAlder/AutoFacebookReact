@@ -85,7 +85,14 @@ exports.weatherCheck = async (api, event) => {
         return;
     }
 
+    if (argv.place.includes('mars')) {
+        api.sendMessage("Contacting Elon🌑Musk...", event.threadID);
+        return;
+    }
+
     const locationQuery = argv.place.join(" ");
+
+    
 
     // 2. Geocode place | append with australia
     // Get the API key 
