@@ -22,7 +22,7 @@
     "@google-cloud/secret-manager": "^3.1.0",
     "@google-cloud/vision": "^2.1.1",
     "argparse": "^1.0.10",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "facebook-chat-api": "^1.8.0",
     "minimist": "^1.2.5",
